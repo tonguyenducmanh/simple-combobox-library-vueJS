@@ -1,0 +1,212 @@
+<template lang="">
+  <div
+    class="combobox"
+    :propName="propName"
+    :value="uniqueSelected"
+    v-click-out.passive="onClickOutside"
+    @keydown.esc.passive="hideComboboxData"
+    @keydown.up.passive="prevEleMove"
+    @keydown.left.passive="prevEleMove"
+    @keydown.down.passive="nextEleMove"
+    @keydown.right.passive="nextEleMove"
+  >
+    <input
+      tabindex="0"
+      class="combobox__input"
+      :class="classInput"
+      type="text"
+      :placeholder="placeHolder"
+      :validate="validate"
+      :data-title="dataTitle"
+      @focus="inputComboboxOnClick"
+      @input="inputComboboxOnClick"
+      v-model="currentInput"
+    />
+    <button tabindex="0" class="combobox__button" @click="btnComboboxOnClick">
+      <div class="combobox__drop"></div>
+    </button>
+    <div
+      class="combobox__data"
+      ref="hihi"
+      :class="isShowData ? ComboboxEnum.comboboxData.SHOW : false"
+    >
+      <template v-for="(comboboxItem, index) in comboboxList" :key="index">
+        <div
+          tabindex="0"
+          class="combobox__item"
+          :value="comboboxItem.value"
+          @click="itemComboboxOnClick"
+          @keydown.enter="itemComboboxOnClick"
+          :class="[
+            seletedValue === comboboxItem.name
+              ? ComboboxEnum.comboboxItem.SELECTED
+              : false,
+            currentInput !== '' &&
+            !comboboxItem.name
+              .toLowerCase()
+              .includes(currentInput.toLowerCase())
+              ? ComboboxEnum.comboboxItem.HIDE
+              : false,
+          ]"
+        >
+          {{ comboboxItem.name }}
+        </div>
+      </template>
+    </div>
+  </div>
+</template>
+<script>
+import ComboboxEnum from "../js/LibEnum.js";
+export default {
+  name: "LibCombobox",
+  props: {
+    classInput: String,
+    dataTitle: String,
+    validate: String,
+    placeHolder: String,
+    propName: String,
+    defaultValue: String,
+    unique: String,
+    // giá trị chèn vào khi không có api
+    data: String,
+    // api để fetch data
+    api: String,
+    // trường thứ nhất muốn lấy trong json respone
+    text: String,
+    // trường thứ hai muốn lấy trong json respone
+    value: String,
+  },
+  data() {
+    return {
+      comboboxList: [],
+      ComboboxEnum,
+      isShowData: false,
+      seletedValue: "",
+      currentInput: "",
+      uniqueSelected: "",
+    };
+  },
+  beforeMount() {
+    /**
+     * Tiến hành fetch dữ liệu từ API để chèn vào combobox hoặc
+     * phân tách data truyền vào component để tạo ra các comboboxitem
+     * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
+     */
+    try {
+      let combobox = this;
+      // trường hợp có api
+      if (this.api !== undefined) {
+        fetch(this.api, { method: "GET" })
+          .then((res) => res.json())
+          .then((res) => {
+            // gán giá trị mong muốn vào trong comboboxList
+            for (let item of res) {
+              combobox.comboboxList.push({
+                value: item[combobox.value],
+                name: item[combobox.text],
+              });
+            }
+          })
+          .catch((res) => console.log(res));
+      }
+      // trường hợp không có api
+      else {
+        // phân chia các item bằng dấu ;
+        let items = this.data.split(";");
+        for (let item of items) {
+          let arrItem = item.split(":");
+          combobox.comboboxList.push({
+            value: arrItem[1].trim(),
+            name: arrItem[0].trim(),
+          });
+        }
+      }
+      // khởi tạo giá trị selected mặc định dựa vào prop truyền vào
+      // gán nó vào data đang trống
+      if (this.defaultValue !== undefined) {
+        this.seletedValue = this.defaultValue;
+      }
+      // gán value id mặc định
+      this.uniqueSelected = this.unique;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  methods: {
+    /**
+     * lắng nghe nhập liệu vào ô input của combobox
+     * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
+     */
+    inputComboboxOnClick() {
+      try {
+        this.isShowData = true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * click vào button thì hiện combobox item.
+     * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
+     */
+    btnComboboxOnClick() {
+      try {
+        this.isShowData = !this.isShowData;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    /**
+     * click vào item thì ẩn combobox data đi và truyền value vào trong input.
+     * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
+     */
+    itemComboboxOnClick(e) {
+      try {
+        // ẩn drop menu đi
+        this.isShowData = false;
+        // select cái đã chọn
+        this.seletedValue = e.target.textContent;
+        this.currentInput = e.target.textContent;
+        this.uniqueSelected = e.target.getAttribute("value");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    /**
+     * click ra ngoài thì ẩn combobox data.
+     * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
+     */
+    onClickOutside() {
+      this.isShowData = false;
+    },
+    /**
+     * ấn phím ESC thì ẩn combobox data.
+     * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
+     */
+    hideComboboxData() {
+      this.isShowData = false;
+    },
+    /**
+     * Khi ấn lên và sang trái thì di chuyển sang tab index phía trước.
+     * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
+     */
+    prevEleMove(e) {
+      if (e.target.previousElementSibling) {
+        e.target.previousElementSibling.focus();
+      }
+    },
+    /**
+     * Khi ấn xuống và sang phải thì di chuyển sang tab index phía sau.
+     * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
+     */
+    nextEleMove(e) {
+      if (e.target.nextElementSibling) {
+        e.target.nextElementSibling.focus();
+      }
+    },
+  },
+};
+</script>
+<style scoped>
+@import url("../css/LibCombobox.css");
+</style>
