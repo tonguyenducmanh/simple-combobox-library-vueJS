@@ -20,7 +20,7 @@
         class="combobox__input"
         :class="classInput"
         type="text"
-        :placeholder="placeHolder"
+        :placeholder="defaultValue !== '' ? defaultValue : placeHolder"
         :validate="validate"
         :data-title="dataTitle"
         @focus="inputComboboxOnClick"
