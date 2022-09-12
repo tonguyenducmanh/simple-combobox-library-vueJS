@@ -1,57 +1,66 @@
 <template lang="">
-  <div
-    class="combobox"
-    :propName="propName"
-    :value="uniqueSelected"
-    v-click-out.passive="onClickOutside"
-    @keydown.esc.passive="hideComboboxData"
-    @keydown.up.passive="prevEleMove"
-    @keydown.left.passive="prevEleMove"
-    @keydown.down.passive="nextEleMove"
-    @keydown.right.passive="nextEleMove"
-  >
-    <input
-      tabindex="0"
-      class="combobox__input"
-      :class="classInput"
-      type="text"
-      :placeholder="placeHolder"
-      :validate="validate"
-      :data-title="dataTitle"
-      @focus="inputComboboxOnClick"
-      @input="inputComboboxOnClick"
-      v-model="currentInput"
-    />
-    <button tabindex="0" class="combobox__button" @click="btnComboboxOnClick">
-      <div class="combobox__drop"></div>
-    </button>
+  <div class="combobox__container">
+    <div v-if="hasLabel" class="input__label">
+      {{ labelText }}
+      <span v-if="showAlertStar" :class="ComboboxEnum.input.LabelAlert">*</span>
+    </div>
     <div
-      class="combobox__data"
-      ref="hihi"
-      :class="isShowData ? ComboboxEnum.comboboxData.SHOW : false"
+      class="combobox"
+      :propName="propName"
+      :value="uniqueSelected"
+      v-click-out.passive="onClickOutside"
+      @keydown.esc.passive="hideComboboxData"
+      @keydown.up.passive="prevEleMove"
+      @keydown.left.passive="prevEleMove"
+      @keydown.down.passive="nextEleMove"
+      @keydown.right.passive="nextEleMove"
     >
-      <template v-for="(comboboxItem, index) in comboboxList" :key="index">
-        <div
-          tabindex="0"
-          class="combobox__item"
-          :value="comboboxItem.value"
-          @click="itemComboboxOnClick"
-          @keydown.enter="itemComboboxOnClick"
-          :class="[
-            seletedValue === comboboxItem.name
-              ? ComboboxEnum.comboboxItem.SELECTED
-              : false,
-            currentInput !== '' &&
-            !comboboxItem.name
-              .toLowerCase()
-              .includes(currentInput.toLowerCase())
-              ? ComboboxEnum.comboboxItem.HIDE
-              : false,
-          ]"
-        >
-          {{ comboboxItem.name }}
-        </div>
-      </template>
+      <input
+        tabindex="0"
+        class="combobox__input"
+        :class="classInput"
+        type="text"
+        :placeholder="placeHolder"
+        :validate="validate"
+        :data-title="dataTitle"
+        @focus="inputComboboxOnClick"
+        @input="inputComboboxOnClick"
+        v-model="currentInput"
+      />
+      <button tabindex="0" class="combobox__button" @click="btnComboboxOnClick">
+        <div class="combobox__drop"></div>
+      </button>
+      <div
+        class="combobox__data"
+        ref="hihi"
+        :class="[
+          isShowData ? ComboboxEnum.comboboxData.SHOW : false,
+          isUp ? ComboboxEnum.comboboxData.UP : false,
+        ]"
+      >
+        <template v-for="(comboboxItem, index) in comboboxList" :key="index">
+          <div
+            tabindex="0"
+            class="combobox__item"
+            :value="comboboxItem.value"
+            @click="itemComboboxOnClick"
+            @keydown.enter="itemComboboxOnClick"
+            :class="[
+              seletedValue === comboboxItem.name
+                ? ComboboxEnum.comboboxItem.SELECTED
+                : false,
+              currentInput !== '' &&
+              !comboboxItem.name
+                .toLowerCase()
+                .includes(currentInput.toLowerCase())
+                ? ComboboxEnum.comboboxItem.HIDE
+                : false,
+            ]"
+          >
+            {{ comboboxItem.name }}
+          </div>
+        </template>
+      </div>
     </div>
   </div>
 </template>
@@ -60,6 +69,10 @@ import ComboboxEnum from "../js/LibEnum.js";
 export default {
   name: "LibCombobox",
   props: {
+    isUp: Boolean,
+    hasLabel: Boolean,
+    labelText: String,
+    showAlertStar: Boolean,
     classInput: String,
     dataTitle: String,
     validate: String,

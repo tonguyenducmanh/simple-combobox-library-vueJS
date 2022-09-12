@@ -1,4 +1,10 @@
-.combobox{
+.combobox__container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.combobox {
   height: 36px;
   width: 100%;
   box-sizing: border-box;
@@ -7,7 +13,18 @@
   outline: none;
 }
 
-.combobox .combobox__input{
+
+.input__label {
+  font-weight: 600;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.input__label--alert {
+  color: var(--ColorAlert);
+}
+
+.combobox .combobox__input {
   width: 100%;
   border-radius: 4px;
   padding-left: 12px;
@@ -18,19 +35,19 @@
 }
 
 
-.combobox .combobox__input:focus{
+.combobox .combobox__input:focus {
   border: 1px solid #50B83C;
 }
 
-.combobox .combobox__input--alert{
+.combobox .combobox__input--alert {
   border: 1px solid #EB3333;
 }
 
-.combobox .combobox__input--alert:focus{
+.combobox .combobox__input--alert:focus {
   border: 1px solid #EB3333;
 }
 
-.combobox .combobox__button{
+.combobox .combobox__button {
   cursor: pointer;
   position: absolute;
   right: 1px;
@@ -44,13 +61,13 @@
   align-items: center;
 }
 
-.combobox .combobox__drop{
+.combobox .combobox__drop {
   position: relative;
   width: 14px;
   height: 14px;
 }
 
-.combobox .combobox__drop::before{
+.combobox .combobox__drop::before {
   position: absolute;
   content: "";
   background-position: center;
@@ -59,7 +76,7 @@
   height: 14px;
 }
 
-.combobox .combobox__data{
+.combobox .combobox__data {
   display: none;
   position: absolute;
   top: 100%;
@@ -74,40 +91,45 @@
   box-sizing: border-box;
 }
 
-.combobox .combobox__data--open{
+.combobox .combobox__data--up {
+  top: unset;
+  bottom: 100%;
+}
+
+.combobox .combobox__data--open {
   display: block;
 }
 
-.combobox .combobox__item{
+.combobox .combobox__item {
   display: block;
   height: 36px;
   box-sizing: border-box;
   padding: 8px;
 }
 
-.combobox .combobox__item--hide{
+.combobox .combobox__item--hide {
   display: none;
 }
 
-.combobox .combobox__item:hover{
+.combobox .combobox__item:hover {
   background-color: #E0E0E0;
   cursor: pointer;
 }
 
-.combobox .combobox__item:active{
+.combobox .combobox__item:active {
   background-color: #c9c9c9;
   cursor: pointer;
 }
 
-.combobox .combobox__item--selected{
+.combobox .combobox__item--selected {
   background-color: #50B83C;
   color: #ffffff;
 }
 
-.combobox .combobox__item--selected:hover{
+.combobox .combobox__item--selected:hover {
   background-color: #50B83C;
 }
 
-.combobox .combobox__item--selected:active{
+.combobox .combobox__item--selected:active {
   background-color: #50B83C;
 }

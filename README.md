@@ -37,6 +37,7 @@ Trong đó : (ngoại trừ data, text, value, api tất cả áp dụng cho c�
 - classInput: tên class của input muốn đặt
 - dataTitle: dùng như tooltip, hover vào sẽ hiện lên
 - validate: giá trị của trường validate, dùng để gọi các resource dựa vào tên validate này
+- isUp : trả về true thì combobox data sổ lên, false sổ xuống.
 
 Ngoài ra có thể sử dụng phím ESC để ẩn combobox
 Phím Enter để nhập giá trị vào input và value vào combobox
