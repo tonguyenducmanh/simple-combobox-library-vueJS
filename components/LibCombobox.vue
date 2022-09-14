@@ -19,8 +19,13 @@
         tabindex="0"
         class="combobox__input"
         :class="classInput"
+        ref="ComboboxInput"
         type="text"
-        :placeholder="defaultValue !== '' ? defaultValue : placeHolder"
+        :placeholder="
+          defaultValue !== '' && defaultValue !== undefined
+            ? defaultValue
+            : placeHolder
+        "
         :validate="validate"
         :data-title="dataTitle"
         @focus="inputComboboxOnClick"
@@ -38,12 +43,16 @@
           isUp ? ComboboxEnum.comboboxData.UP : false,
         ]"
       >
+        <!-- itemComboboxOnClick; -->
         <template v-for="(comboboxItem, index) in comboboxList" :key="index">
           <div
             tabindex="0"
             class="combobox__item"
             :value="comboboxItem.value"
-            @click="itemComboboxOnClick"
+            @click="
+              $emit('change-size', comboboxItem.value);
+              itemComboboxOnClick();
+            "
             @keydown.enter="itemComboboxOnClick"
             :class="[
               seletedValue === comboboxItem.name
@@ -79,6 +88,7 @@ export default {
     placeHolder: String,
     propName: String,
     defaultValue: String,
+    fetchedValue: String,
     unique: String,
     // giá trị chèn vào khi không có api
     data: String,
@@ -99,7 +109,8 @@ export default {
       uniqueSelected: "",
     };
   },
-  beforeMount() {
+  emits: ["change-size"],
+  mounted() {
     /**
      * Tiến hành fetch dữ liệu từ API để chèn vào combobox hoặc
      * phân tách data truyền vào component để tạo ra các comboboxitem
@@ -114,6 +125,14 @@ export default {
           .then((res) => {
             // gán giá trị mong muốn vào trong comboboxList
             for (let item of res) {
+              // kiểm tra xem nếu có giá trị mặc định thì chèn cho nó vào input và gán value vào combobox
+              if (item[combobox.value] === combobox.fetchedValue) {
+                combobox.currentInput = item[combobox.text];
+                combobox.isShowData = false;
+                // select cái đã chọn
+                combobox.seletedValue = item[combobox.text];
+                combobox.uniqueSelected = item[combobox.value];
+              }
               combobox.comboboxList.push({
                 value: item[combobox.value],
                 name: item[combobox.text],
@@ -173,14 +192,30 @@ export default {
      * click vào item thì ẩn combobox data đi và truyền value vào trong input.
      * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
      */
-    itemComboboxOnClick(e) {
+    itemComboboxOnClick() {
       try {
         // ẩn drop menu đi
         this.isShowData = false;
         // select cái đã chọn
-        this.seletedValue = e.target.textContent;
-        this.currentInput = e.target.textContent;
-        this.uniqueSelected = e.target.getAttribute("value");
+        this.seletedValue = event.target.textContent;
+        this.currentInput = event.target.textContent;
+        this.uniqueSelected = event.target.getAttribute("value");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    /**
+     * clear toàn bộ value của combobox đi nha
+     * Author: Tô Nguyễn Đức Mạnh (14/09/2022)
+     */
+    clearComboboxSelected() {
+      try {
+        // ẩn drop menu đi
+        this.isShowData = false;
+        // select cái đã chọn
+        this.seletedValue = "";
+        this.currentInput = "";
+        this.uniqueSelected = "";
       } catch (error) {
         console.log(error);
       }
