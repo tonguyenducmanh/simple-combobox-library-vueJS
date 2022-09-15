@@ -38,6 +38,8 @@ Trong đó : (ngoại trừ data, text, value, api tất cả áp dụng cho c�
 - dataTitle: dùng như tooltip, hover vào sẽ hiện lên
 - validate: giá trị của trường validate, dùng để gọi các resource dựa vào tên validate này
 - isUp : trả về true thì combobox data sổ lên, false sổ xuống.
+- isNotNull: trả về true thì trường này bắt buộc nhập,nếu không nhập sẽ báo đỏ
+- isDefaultError: trả về true thì trường này sẽ báo đỏ ngay lúc mounted
 
 Ngoài ra có thể sử dụng phím ESC để ẩn combobox
 Phím Enter để nhập giá trị vào input và value vào combobox

@@ -10,7 +10,7 @@ let ComboboxEnum = {
   input: {
     Italic: "input__field--italic",
     LabelAlert: "input__label--alert",
-    InputAlert: "input__field--alert",
+    InputAlert: "combobox__input--alert",
   },
 };
 

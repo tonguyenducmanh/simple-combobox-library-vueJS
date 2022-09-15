@@ -14,11 +14,15 @@
       @keydown.left.passive="prevEleMove"
       @keydown.down.passive="nextEleMove"
       @keydown.right.passive="nextEleMove"
+      :data-title="dataTitle"
     >
       <input
         tabindex="0"
         class="combobox__input"
-        :class="classInput"
+        :class="
+          ([classInput],
+          isErrorTying === true ? ComboboxEnum.input.InputAlert : '')
+        "
         ref="ComboboxInput"
         type="text"
         :placeholder="
@@ -27,9 +31,12 @@
             : placeHolder
         "
         :validate="validate"
-        :data-title="dataTitle"
         @focus="inputComboboxOnClick"
-        @input="inputComboboxOnClick"
+        @input="
+          inputComboboxOnClick();
+          notNullValidate();
+        "
+        @focusout="notNullValidate"
         v-model="currentInput"
       />
       <button tabindex="0" class="combobox__button" @click="btnComboboxOnClick">
@@ -52,8 +59,11 @@
             @click="
               $emit('change-size', comboboxItem.value);
               itemComboboxOnClick();
+              notNullValidate();
             "
-            @keydown.enter="itemComboboxOnClick"
+            @keydown.tab="
+              itemComboboxOnClick(index === comboboxList.length - 1)
+            "
             :class="[
               seletedValue === comboboxItem.name
                 ? ComboboxEnum.comboboxItem.SELECTED
@@ -98,6 +108,8 @@ export default {
     text: String,
     // trường thứ hai muốn lấy trong json respone
     value: String,
+    isNotNull: Boolean,
+    isDefaultError: Boolean,
   },
   data() {
     return {
@@ -107,6 +119,7 @@ export default {
       seletedValue: "",
       currentInput: "",
       uniqueSelected: "",
+      isErrorTying: false,
     };
   },
   emits: ["change-size"],
@@ -117,6 +130,9 @@ export default {
      * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
      */
     try {
+      if (this.isDefaultError === true) {
+        this.isErrorTying = true;
+      }
       let combobox = this;
       // trường hợp có api
       if (this.api !== undefined) {
@@ -166,6 +182,26 @@ export default {
   },
   methods: {
     /**
+     * Validate trường bắt buộc phải nhập (không được để trống)
+     * Author: Tô Nguyễn Đức Mạnh (15/09/2022)
+     */
+    notNullValidate() {
+      try {
+        // kiểm tra xem có phải trường not null không
+        if (
+          this.isNotNull === true &&
+          (this.currentInput === "" || this.currentInput === undefined)
+        ) {
+          console.log(this.currentInput);
+          this.isErrorTying = true;
+        } else {
+          this.isErrorTying = false;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    /**
      * lắng nghe nhập liệu vào ô input của combobox
      * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
      */
@@ -192,14 +228,16 @@ export default {
      * click vào item thì ẩn combobox data đi và truyền value vào trong input.
      * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
      */
-    itemComboboxOnClick() {
+    itemComboboxOnClick(value) {
       try {
-        // ẩn drop menu đi
-        this.isShowData = false;
-        // select cái đã chọn
-        this.seletedValue = event.target.textContent;
-        this.currentInput = event.target.textContent;
-        this.uniqueSelected = event.target.getAttribute("value");
+        if (value === true || value === undefined || value === "") {
+          // ẩn drop menu đi
+          this.isShowData = false;
+          // select cái đã chọn
+          this.seletedValue = event.target.textContent;
+          this.currentInput = event.target.textContent;
+          this.uniqueSelected = event.target.getAttribute("value");
+        }
       } catch (error) {
         console.log(error);
       }
