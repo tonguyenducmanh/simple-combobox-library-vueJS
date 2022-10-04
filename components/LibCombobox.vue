@@ -34,7 +34,7 @@
         :validate="validate"
         @focus="inputComboboxOnClick"
         @input="
-          inputComboboxOnClick();
+          inputComboboxOnTyping();
           notNullValidate();
         "
         @focusout="notNullValidate"
@@ -79,6 +79,7 @@
                 ? ComboboxEnum.comboboxItem.SELECTED
                 : false,
               currentInput !== '' &&
+              showAll === false &&
               !comboboxItem.name
                 .toLowerCase()
                 .includes(currentInput.toLowerCase())
@@ -131,6 +132,7 @@ export default {
       currentInput: "",
       uniqueSelected: "",
       isErrorTying: false,
+      showAll: true,
     };
   },
   // trường hợp change-size là dùng để emit thay đổi số trang bên EmployeePage
@@ -213,12 +215,25 @@ export default {
       }
     },
     /**
-     * lắng nghe nhập liệu vào ô input của combobox
+     * lắng nghe click vào ô input của combobox
      * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
      */
     inputComboboxOnClick() {
       try {
         this.isShowData = true;
+        this.showAll = true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    /**
+     * lắng nghe nhập liệu vào ô input của combobox
+     * Author: Tô Nguyễn Đức Mạnh (11/09/2022)
+     */
+    inputComboboxOnTyping() {
+      try {
+        this.isShowData = true;
+        this.showAll = false;
       } catch (error) {
         console.log(error);
       }
@@ -231,6 +246,7 @@ export default {
     btnComboboxOnClick() {
       try {
         this.isShowData = !this.isShowData;
+        this.showAll = true;
       } catch (error) {
         console.log(error);
       }
