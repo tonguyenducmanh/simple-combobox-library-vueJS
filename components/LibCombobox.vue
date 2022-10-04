@@ -40,7 +40,12 @@
         @focusout="notNullValidate"
         v-model="currentInput"
       />
-      <button tabindex="0" class="combobox__button" @click="btnComboboxOnClick">
+      <button
+        tabindex="0"
+        class="combobox__button"
+        :class="buttonClass"
+        @click="btnComboboxOnClick"
+      >
         <div class="combobox__drop"></div>
       </button>
       <div
@@ -120,6 +125,8 @@ export default {
     value: String,
     isNotNull: Boolean,
     isDefaultError: Boolean,
+    buttonClass: String,
+    // v-model để binding 2 chiều 2 cái dưới vào form bên ngoài combobox nếu có
     modelValue: String,
     modelName: String,
   },

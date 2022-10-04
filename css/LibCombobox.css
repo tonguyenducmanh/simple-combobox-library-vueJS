@@ -74,6 +74,10 @@
   align-items: center;
 }
 
+.combobox .combobox__button--white {
+  background-color: white;
+}
+
 .combobox .combobox__drop {
   position: relative;
   width: 14px;

@@ -15,6 +15,7 @@ có api
   class="form__ele"
   placeHolder="Nhập đơn vị"
   classInput="input__musthave"
+  buttonClass="combobox__button--white"
   v-model:modelValue="formObject['departmentID']"
   v-model:modelName="formObject['departmentName']"
   unique=""
@@ -56,6 +57,7 @@ Trong đó : (ngoại trừ data, text, value, api tất cả áp dụng cho c�
 - isUp : trả về true thì combobox data sổ lên, false sổ xuống.
 - isNotNull: trả về true thì trường này bắt buộc nhập,nếu không nhập sẽ báo đỏ
 - isDefaultError: trả về true thì trường này sẽ báo đỏ ngay lúc mounted
+- buttonClass="combobox__button--white": class tùy chỉnh cho nút btn, giả dụ muốn đổi màu chẳng hạn
 
 Ngoài ra có thể sử dụng phím ESC để ẩn combobox
 Phím Enter để nhập giá trị vào input và value vào combobox
