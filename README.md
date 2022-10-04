@@ -5,24 +5,40 @@ Code sẽ được viết trong Component có dạng như sau
 ```html
 có api
 <LibCombobox
-  api="https://cukcuk.manhnv.net/api/v1/Departments"
-  text="DepartmentName"
-  value="DepartmentId"
-  placeHolder="Hãy chọn phòng ban"
-  classInput="input__field"
+  :hasLabel="true"
+  labelText="Đơn vị"
+  :showAlertStar="true"
+  dataTitle="Đơn vị không được để trống."
+  :api="MISAEnum.API.GETDEPARTMENTLIST"
+  text="departmentName"
+  value="departmentID"
+  class="form__ele"
+  placeHolder="Nhập đơn vị"
+  classInput="input__musthave"
+  v-model:modelValue="formObject['departmentID']"
+  v-model:modelName="formObject['departmentName']"
+  unique=""
+  :isNotNull="true"
 />
 không có api
 <LibCombobox
+  id="page_ranges"
+  classInput="input__field"
   propName="PageNavigation"
-  data="10 bản ghi trên trang:10;20 bản ghi trên trang:20;50 bản ghi trên trang: 50;100 bản ghi trên trang:100"
+  :data="10 bản ghi trên trang:10;20 bản ghi trên trang:20;50 bản ghi trên trang: 50;100 bản ghi trên trang:100"
   placeHolder="Hãy chọn số trang"
-  defaultValue="10 bản ghi trên trang"
-  unique="10"
+  :defaultValue="10 bản ghi trên trang"
+  :unique="10"
+  :isUp="true"
+  @change-size="changeSize"
 />
 ```
 
 Trong đó : (ngoại trừ data, text, value, api tất cả áp dụng cho cả 2 trường hợp)
 
+- v-model:modelValue : giá trị ID muốn lấy khi click vào combobox
+- v-model:modelName : giá trị value muốn lấy khi click vào combobox
+  dùng 2 cái trên để binding 2 chiều cùng form
 - id: tên id của combobox muốn đặt
 - api: địa chỉ api của trang web fetch data về
 - text : giá trị của trường muốn lấy trong json trả về để gán vào textContent item

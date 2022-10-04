@@ -7,7 +7,7 @@
     <div
       class="combobox"
       :propName="propName"
-      :value="uniqueSelected"
+      :valueName="currentInput"
       v-click-out.passive="onClickOutside"
       @keydown.esc.passive="hideComboboxData"
       @keydown.up.passive="prevEleMove"
@@ -15,6 +15,7 @@
       @keydown.down.passive="nextEleMove"
       @keydown.right.passive="nextEleMove"
       :data-title="dataTitle"
+      :value="modelValue"
     >
       <input
         tabindex="0"
@@ -57,6 +58,15 @@
             class="combobox__item"
             :value="comboboxItem.value"
             @click="
+              $emit('update:modelValue', comboboxItem.value);
+              $emit('update:modelName', comboboxItem.name);
+              $emit('change-size', comboboxItem.value);
+              itemComboboxOnClick();
+              notNullValidate();
+            "
+            @keydown.enter="
+              $emit('update:modelValue', comboboxItem.value);
+              $emit('update:modelName', comboboxItem.name);
               $emit('change-size', comboboxItem.value);
               itemComboboxOnClick();
               notNullValidate();
@@ -98,7 +108,6 @@ export default {
     placeHolder: String,
     propName: String,
     defaultValue: String,
-    fetchedValue: String,
     unique: String,
     // giá trị chèn vào khi không có api
     data: String,
@@ -110,6 +119,8 @@ export default {
     value: String,
     isNotNull: Boolean,
     isDefaultError: Boolean,
+    modelValue: String,
+    modelName: String,
   },
   data() {
     return {
@@ -122,7 +133,8 @@ export default {
       isErrorTying: false,
     };
   },
-  emits: ["change-size"],
+  // trường hợp change-size là dùng để emit thay đổi số trang bên EmployeePage
+  emits: ["update:modelValue", "update:modelName", "change-size"],
   mounted() {
     /**
      * Tiến hành fetch dữ liệu từ API để chèn vào combobox hoặc
@@ -142,7 +154,7 @@ export default {
             // gán giá trị mong muốn vào trong comboboxList
             for (let item of res) {
               // kiểm tra xem nếu có giá trị mặc định thì chèn cho nó vào input và gán value vào combobox
-              if (item[combobox.value] === combobox.fetchedValue) {
+              if (item[combobox.value] === combobox.modelValue) {
                 combobox.currentInput = item[combobox.text];
                 combobox.isShowData = false;
                 // select cái đã chọn
@@ -192,7 +204,6 @@ export default {
           this.isNotNull === true &&
           (this.currentInput === "" || this.currentInput === undefined)
         ) {
-          console.log(this.currentInput);
           this.isErrorTying = true;
         } else {
           this.isErrorTying = false;
